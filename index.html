@@ -53,20 +53,22 @@
       <a-sky hide-in-ar color="#87CEEB"></a-sky>
       <a-plane hide-in-ar rotation="-90 0 0" width="10" height="10" color="#999"></a-plane>
 
-      <!-- Avatar -->
-      <a-entity position="0 0 -2">
+      <!-- Avatar (girado 180° para que mire hacia ti) -->
+      <a-entity position="0 0 -2" rotation="0 180 0">
         <a-entity
-          gltf-model="url(model.glb)"
+          gltf-model="url(me.glb)"
           fit-model="height: 1.7"
           animation-mixer="clip: *; loop: repeat"
         ></a-entity>
 
+        <!-- Saludo (con rotation para que el texto no quede al revés) -->
         <a-text
           value="¡Hola!"
           align="center"
           color="#ffffff"
           width="4"
           position="0 2.2 0"
+          rotation="0 180 0"
         ></a-text>
       </a-entity>
 
