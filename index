@@ -2,26 +2,55 @@
 <html lang="es">
   <head>
     <meta charset="utf-8" />
-    <title>Reto AR</title>
-
-  <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/aframe-extras@6.1.1/dist/aframe-extras.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Reto AR - Saluda a mi avatar</title>
+    <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aframe-extras@6.1.1/dist/aframe-extras.min.js"></script>
+    <script>
+      // Oculta el suelo cuando se entra en modo AR y lo restaura al salir
+      AFRAME.registerComponent("hide-in-ar", {
+        init: function () {
+          const scene = this.el.sceneEl;
+          scene.addEventListener("enter-vr", () => {
+            if (scene.is("ar-mode")) this.el.setAttribute("visible", false);
+          });
+          scene.addEventListener("exit-vr", () => {
+            this.el.setAttribute("visible", true);
+          });
+        },
+      });
+    </script>
   </head>
   <body style="margin: 0; overflow: hidden;">
     <a-scene xr-mode-ui="XRMode: xr;">
+      <!-- Luces -->
       <a-entity light="type: ambient; intensity: 1"></a-entity>
       <a-entity light="type: directional; intensity: 0.8" position="1 1 0"></a-entity>
 
-      <a-plane rotation="-90 0 0" width="4" height="4" color="#999"></a-plane>
+      <!-- Suelo (solo visible fuera de AR) -->
+      <a-plane hide-in-ar rotation="-90 0 0" width="4" height="4" color="#999"></a-plane>
 
+      <!-- Avatar -->
+      <a-entity position="0 0 -2">
+        <a-entity
+          gltf-model="url(me.glb)"
+          rotation="0 0 0"
+          scale="1 1 1"
+          animation-mixer="clip: *; loop: repeat"
+        ></a-entity>
 
-<a-entity
-  gltf-model="url(me.glb)"
-  rotation="0 0 0"   
-  scale="1 1 1"
-  animation-mixer="clip: *; loop: repeat"
-></a-entity>
-      <a-entity camera look-controls position="0 1.6 3"></a-entity>
+        <!-- Saludo -->
+        <a-text
+          value="¡Hola!"
+          align="center"
+          color="#ffffff"
+          width="3"
+          position="0 2 0"
+        ></a-text>
+      </a-entity>
+
+      <!-- Cámara -->
+      <a-entity camera look-controls position="0 1.6 0"></a-entity>
     </a-scene>
   </body>
 </html>
