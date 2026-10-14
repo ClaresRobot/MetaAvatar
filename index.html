@@ -28,7 +28,6 @@
             const obj = this.el.getObject3D("mesh");
             const box = new THREE.Box3().setFromObject(obj);
             const size = box.getSize(new THREE.Vector3());
-            console.log("Modelo cargado. Tamaño original:", size);
             if (size.y > 0) obj.scale.multiplyScalar(this.data.height / size.y);
             box.setFromObject(obj);
             const center = box.getCenter(new THREE.Vector3());
@@ -37,13 +36,31 @@
             obj.position.y -= box.min.y;
           });
           this.el.addEventListener("model-error", (e) => {
-            console.error("ERROR cargando me.glb:", e);
+            console.error("ERROR cargando model.glb:", e);
           });
         },
+      });
+
+      // Botón de prueba: gira el avatar 90° cada vez y muestra el ángulo
+      window.addEventListener("DOMContentLoaded", () => {
+        let angle = 0;
+        const btn = document.getElementById("rotar");
+        btn.addEventListener("click", () => {
+          angle = (angle + 90) % 360;
+          document.getElementById("avatar").setAttribute("rotation", `0 ${angle} 0`);
+          btn.textContent = `Girar 90° (ángulo actual: ${angle}°)`;
+        });
       });
     </script>
   </head>
   <body style="margin: 0; overflow: hidden;">
+    <button
+      id="rotar"
+      style="position: fixed; bottom: 10px; left: 10px; z-index: 999; padding: 10px 14px; font-size: 16px;"
+    >
+      Girar 90° (ángulo actual: 0°)
+    </button>
+
     <a-scene xr-mode-ui="XRMode: xr;">
       <!-- Luces -->
       <a-entity light="type: ambient; intensity: 1.2"></a-entity>
@@ -53,22 +70,23 @@
       <a-sky hide-in-ar color="#87CEEB"></a-sky>
       <a-plane hide-in-ar rotation="-90 0 0" width="10" height="10" color="#999"></a-plane>
 
-      <!-- Avatar (girado 180° para que mire hacia ti) -->
-      <a-entity position="0 0 -2" rotation="0 180 0">
+      <!-- Avatar (fijo, sin seguir a la cámara) -->
+      <a-entity position="0 0 -2">
         <a-entity
+          id="avatar"
           gltf-model="url(model.glb)"
           fit-model="height: 1.7"
+          rotation="0 0 0"
           animation-mixer="clip: *; loop: repeat"
         ></a-entity>
 
-        <!-- Saludo (con rotation para que el texto no quede al revés) -->
+        <!-- Saludo -->
         <a-text
           value="¡Hola!"
           align="center"
           color="#ffffff"
           width="4"
           position="0 2.2 0"
-          rotation="0 180 0"
         ></a-text>
       </a-entity>
 
